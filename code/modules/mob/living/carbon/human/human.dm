@@ -4,6 +4,7 @@
 	voice_name = "unknown"
 	icon = 'icons/mob/human.dmi'
 	icon_state = "human_m_s"
+	var/is_murderer = FALSE // for the "find the murderer" gamemode
 
 /mob/living/carbon/human/New(var/new_loc, var/new_species = null)
 
@@ -773,7 +774,7 @@ var/list/rank_prefix = list(\
 		return
 
 	usr << "You must[self ? "" : " both"] remain still until counting is finished."
-	if (do_mob(usr, src, 60))
+	if (do_after(usr, 60, usr.loc))
 		usr << "<span class='notice'>[self ? "Your" : "[src]'s"] pulse is [get_pulse(GETPULSE_HAND)].</span>"
 	else
 		usr << "<span class='warning'>You failed to check the pulse. Try again.</span>"

@@ -15,7 +15,7 @@
 //Going here till I find a better place for it.
 
 /mob/living/proc/attempt_dodge()//Handle parry is an object proc and it's, its own thing.
-	if(combat_mode && (defense_intent == I_DODGE) && !lying)//Todo, make use of the check_shield_arc proc to make sure you can't dodge from behind.
+	if((defense_intent == I_DODGE) && !lying)//Todo, make use of the check_shield_arc proc to make sure you can't dodge from behind.
 		var/mob/living/carbon/human/H_user = src
 		if(prob(min(25 * H_user.getStatCoeff("dexterity"), 75)))
 			do_dodge()
@@ -27,5 +27,5 @@
 	step(src,lol)//move them
 	var/mob/living/carbon/human/H = src
 	H.adaptStat("dexterity", 1)
-	visible_message("<b><big>[src.name] dodges out of the way!!</big></b>")//send a message
+	visible_message("<b><big>[src.name] dodges out of the way!</big></b>")//send a message
 	//be on our way

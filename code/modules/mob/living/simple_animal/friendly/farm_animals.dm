@@ -167,7 +167,7 @@
 	attacktext = "kicked"
 	health = TRUE
 	var/amount_grown = FALSE
-	pass_flags = PASSTABLE | PASSGRILLE
+	pass_flags = PASSTABLE
 	mob_size = MOB_MINISCULE
 
 /mob/living/simple_animal/chick/New()
@@ -181,7 +181,7 @@
 		return
 	if (!stat)
 		amount_grown += rand(1,2)
-		if (amount_grown >= 100)
+		if (amount_grown >= 3000)
 			new /mob/living/simple_animal/chicken(loc)
 			qdel(src)
 
@@ -207,7 +207,7 @@ var/global/chicken_count = FALSE
 	response_harm   = "kicks"
 	attacktext = "kicked"
 	health = 10
-	var/eggsleft = FALSE
+	var/eggsleft = 5
 	var/body_color
 	pass_flags = PASSTABLE
 	mob_size = MOB_SMALL

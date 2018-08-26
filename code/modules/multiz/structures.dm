@@ -96,12 +96,20 @@
 /obj/structure/multiz/ladder/attack_hand(var/mob/M)
 
 	if (M.restrained())
-		M << "<span class='warning'>You can't use the ladder while you're restrained.</span>"
+		M << "<span class='warning'>You can't use /the [src] while you're restrained.</span>"
 		return
 
 	if (!target || !istype(target.loc, /turf))
-		M << "<span class='notice'>\The [src] is incomplete and can't be climbed.</span>"
-		return
+		if (!istype(src, /obj/structure/multiz/ladder/ww2/tunneltop) && (!istype(src, /obj/structure/multiz/ladder/ww2/tunnelbottom)))
+			M << "<span class='notice'>\The [src] is incomplete and can't be climbed.</span>"
+			return
+		else
+			if (istype(src, /obj/structure/multiz/ladder/ww2/tunneltop))
+				M.z = M.z-1
+				return
+			if (istype(src, /obj/structure/multiz/ladder/ww2/tunnelbottom))
+				M.z = M.z+1
+				return
 
 	var/turf/T = target.loc
 	if (!istop)
@@ -246,11 +254,27 @@
 		qdel(target)
 	return ..()
 
+/obj/structure/multiz/ladder/ww2/tunneltop
+	name = "tunnel entrance"
+	desc = "A hole dug in the floor, leads to an underground tunnel."
+	icon_state = "hole_top"
+
+/obj/structure/multiz/ladder/ww2/tunnelbottom
+	name = "tunnel exit"
+	desc = "A makeshift stairway, leads to the surface."
+	icon_state = "hole_bottom"
+	istop = FALSE
 
 /obj/structure/multiz/stairs
 	name = "Stairs"
 	icon_state = "rampup"
 	layer = 2.4
+
+/obj/structure/multiz/stairs_wood
+	name = "Wood Stairs"
+	icon_state = "wood2_stairs"
+	layer = 2.4
+
 
 /obj/structure/multiz/stairs/enter
 	icon_state = "ramptop"

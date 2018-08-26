@@ -52,6 +52,10 @@
 		loaded = W
 		if (M == user)
 			do_html(M)
+	else if (istype(W,/obj/item/weapon/wrench))
+		playsound(loc, 'sound/items/Ratchet.ogg', 100, TRUE)
+		user << (anchored ? "<span class='notice'>You unfasten \the [src] from the floor.</span>" : "<span class='notice'>You secure \the [src] to the floor.</span>")
+		anchored = !anchored
 
 
 /obj/structure/cannon/interact(var/mob/m)
@@ -331,24 +335,137 @@
 				bound_height = 64
 				bound_width = 32
 				icon = 'icons/obj/cannon_v.dmi'
+				icon_state = "cannon"
 			if (WEST)
 				dir = NORTH
 				bound_height = 64
 				bound_width = 32
 				icon = 'icons/obj/cannon_v.dmi'
+				icon_state = "cannon"
 			if (NORTH)
 				dir = EAST
 				bound_height = 32
 				bound_width = 64
 				icon = 'icons/obj/cannon_h.dmi'
+				icon_state = "cannon"
 			if (SOUTH)
 				dir = WEST
 				bound_height = 32
 				bound_width = 64
 				icon = 'icons/obj/cannon_h.dmi'
+				icon_state = "cannon"
 	return
 
+/obj/structure/cannon/relaymove(var/mob/mob, direction)
+	if (direction)
+		// prevents going over the invisible wall
+		var/list/dirs = list()
 
+		switch (direction)
+			if (NORTHEAST)
+				dirs += NORTH
+				dirs += EAST
+			if (NORTHWEST)
+				dirs += NORTH
+				dirs += WEST
+			if (SOUTHEAST)
+				dirs += SOUTH
+				dirs += EAST
+			if (SOUTHWEST)
+				dirs += SOUTH
+				dirs += WEST
+			else
+				dirs += direction
+
+		for (var/refdir in dirs)
+			var/turf/ref = get_step(mob, refdir)
+
+			if (ref && map.check_caribbean_block(mob, ref))
+				mob.dir = direction
+				return FALSE
+
+	// bug abusers btfo
+	if (map.check_caribbean_block(mob, get_turf(mob)))
+		return FALSE
+	if (dir==SOUTH)
+		bound_height = 64
+		bound_width = 32
+		icon = 'icons/obj/cannon_v.dmi'
+		icon_state = "cannon"
+	if (dir==NORTH)
+		bound_height = 64
+		bound_width = 32
+		icon = 'icons/obj/cannon_v.dmi'
+		icon_state = "cannon"
+	if (dir==EAST)
+		bound_height = 32
+		bound_width = 64
+		icon = 'icons/obj/cannon_h.dmi'
+		icon_state = "cannon"
+	if (dir==WEST)
+		bound_height = 32
+		bound_width = 64
+		icon = 'icons/obj/cannon_h.dmi'
+		icon_state = "cannon"
+	return TRUE
+
+/obj/structure/cannon/Bump(var/atom/A, yes)
+
+	if (throwing)
+		throw_impact(A)
+		throwing = FALSE
+
+	spawn(0)
+		if (A && yes)
+			A.last_bumped = world.time
+			A.Bumped(src)
+		return
+	if (dir==SOUTH)
+		bound_height = 64
+		bound_width = 32
+		icon = 'icons/obj/cannon_v.dmi'
+		icon_state = "cannon"
+	if (dir==NORTH)
+		bound_height = 64
+		bound_width = 32
+		icon = 'icons/obj/cannon_v.dmi'
+		icon_state = "cannon"
+	if (dir==EAST)
+		bound_height = 32
+		bound_width = 64
+		icon = 'icons/obj/cannon_h.dmi'
+		icon_state = "cannon"
+	if (dir==WEST)
+		bound_height = 32
+		bound_width = 64
+		icon = 'icons/obj/cannon_h.dmi'
+		icon_state = "cannon"
+	..()
+	return
+
+/obj/structure/cannon/Move(var/turf/NewLoc, var/newdir)
+	..()
+	switch(newdir)
+		if (SOUTH)
+			bound_height = 64
+			bound_width = 32
+			icon = 'icons/obj/cannon_v.dmi'
+			icon_state = "cannon"
+		if (NORTH)
+			bound_height = 64
+			bound_width = 32
+			icon = 'icons/obj/cannon_v.dmi'
+			icon_state = "cannon"
+		if (EAST)
+			bound_height = 32
+			bound_width = 64
+			icon = 'icons/obj/cannon_h.dmi'
+			icon_state = "cannon"
+		if (WEST)
+			bound_height = 32
+			bound_width = 64
+			icon = 'icons/obj/cannon_h.dmi'
+			icon_state = "cannon"
 /*
 /obj/structure/cannon/verb/fix()
 	set category = null
