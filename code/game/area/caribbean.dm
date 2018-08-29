@@ -119,7 +119,7 @@
 // admin zone
 
 /area/caribbean/admin
-	icon_state = "purple1"
+	icon_state = "blue1"
 	name = "Admin Zone"
 	location = AREA_INSIDE
 	artillery_integrity = INFINITY
@@ -173,6 +173,7 @@
 	name = "the void"
 	location = AREA_INSIDE
 	is_void_area = TRUE
+	base_turf = /turf/floor/dirt
 
 /area/caribbean/void/caves
 	icon_state = "blue1"

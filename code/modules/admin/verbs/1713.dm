@@ -6,84 +6,7 @@
 	ticker.players_can_join = !ticker.players_can_join
 	world << "<big><b>You [(ticker.players_can_join) ? "can" : "can't"] join the game [(ticker.players_can_join) ? "now" : "anymore"].</b></big>"
 	message_admins("[key_name(src)] changed the playing setting.")
-/*
-/client/proc/allow_join_geforce()
-	set category = "Special"
-	set name = "Toggle joining (German)"
 
-	ticker.can_latejoin_geforce = !ticker.can_latejoin_geforce
-	world << "<font color=red>You [(ticker.can_latejoin_geforce) ? "can" : "can't"] join the Germans [(ticker.can_latejoin_geforce) ? "now" : "anymore"].</font>"
-	message_admins("[key_name(src)] changed the geforce latejoin setting.")
-
-/client/proc/allow_join_ruforce()
-	set category = "Special"
-	set name = "Toggle joining (Russian)"
-
-	ticker.can_latejoin_ruforce = !ticker.can_latejoin_ruforce
-	world << "<font color=red>You [(ticker.can_latejoin_ruforce) ? "can" : "can't"] join the Russians [(ticker.can_latejoin_ruforce) ? "now" : "anymore"].</font>"
-	message_admins("[key_name(src)] changed the ruforce latejoin setting.")
-
-/client/proc/allow_rjoin_geforce()
-	set category = "Special"
-	set name = "Toggle reinforcements (German)"
-
-	if (reinforcements_master)
-		reinforcements_master.locked[BRITISH] = !reinforcements_master.locked[BRITISH]
-		world << "<font color=red>Reinforcements [(!reinforcements_master.locked[BRITISH]) ? "can" : "can't"] join the Germans [(!reinforcements_master.locked[BRITISH]) ? "now" : "anymore"].</font>"
-		message_admins("[key_name(src)] changed the geforce reinforcements setting.")
-	else
-		src << "<span class = danger>WARNING: No reinforcements master found.</span>"
-
-/client/proc/allow_rjoin_ruforce()
-	set category = "Special"
-	set name = "Toggle reinforcements (Russian)"
-
-	if (reinforcements_master)
-		reinforcements_master.locked[PIRATES] = !reinforcements_master.locked[PIRATES]
-		world << "<font color=red>Reinforcements [(!reinforcements_master.locked[PIRATES]) ? "can" : "can't"] join the Russians [(!reinforcements_master.locked[PIRATES]) ? "now" : "anymore"].</font>"
-		message_admins("[key_name(src)] changed the ruforce reinforcements setting.")
-	else
-		src << "<span class = danger>WARNING: No reinforcements master found.</span>"
-
-
-/client/proc/force_reinforcements_geforce()
-	set category = "Special"
-	set name = "Quickspawn reinforcements (German)"
-
-	var/list/l = reinforcements_master.reinforcement_pool[BRITISH]
-
-	if (reinforcements_master)
-		if (l.len)
-			reinforcements_master.allow_quickspawn[BRITISH] = TRUE
-			reinforcements_master.british_countdown = 0
-		else
-			src << "<span class = danger>Nobody is in the German reinforcement pool.</span>"
-	else
-		src << "<span class = danger>WARNING: No reinforcements master found.</span>"
-
-	message_admins("[key_name(src)] tried to send reinforcements for the Germans.")
-
-	reinforcements_master.lock_check()
-
-/client/proc/force_reinforcements_ruforce()
-	set category = "Special"
-	set name = "Quickspawn reinforcements (Russian)"
-
-	var/list/l = reinforcements_master.reinforcement_pool[PIRATES]
-
-	if (reinforcements_master)
-		if (l.len)
-			reinforcements_master.allow_quickspawn[PIRATES] = TRUE
-			reinforcements_master.pirates_countdown = 0
-		else
-			src << "<span class = danger>Nobody is in the Russian reinforcement pool.</span>"
-	else
-		src << "<span class = danger>WARNING: No reinforcements master found.</span>"
-
-	message_admins("[key_name(src)] tried to send reinforcements for the Russians.")
-
-	reinforcements_master.lock_check()
-*/
 // debugging
 /client/proc/reset_roundstart_autobalance()
 	set category = "Special"
@@ -122,6 +45,11 @@
 var/civilians_toggled = TRUE
 var/british_toggled = TRUE
 var/pirates_toggled = TRUE
+var/indians_toggled = TRUE
+var/french_toggled = TRUE
+var/spanish_toggled = TRUE
+var/portuguese_toggled = TRUE
+var/dutch_toggled = TRUE
 
 /client/proc/toggle_factions()
 	set name = "Toggle Factions"
@@ -133,9 +61,14 @@ var/pirates_toggled = TRUE
 
 	var/list/choices = list()
 
-	choices += "CIVILIANS ([civilians_toggled ? "ENABLED" : "DISABLED"])"
+	choices += "CIVILIAN ([civilians_toggled ? "ENABLED" : "DISABLED"])"
 	choices += "BRITISH ([british_toggled ? "ENABLED" : "DISABLED"])"
 	choices += "PIRATES ([pirates_toggled ? "ENABLED" : "DISABLED"])"
+	choices += "PORTUGUESE ([portuguese_toggled ? "ENABLED" : "DISABLED"])"
+	choices += "FRENCH ([french_toggled ? "ENABLED" : "DISABLED"])"
+	choices += "SPANISH ([spanish_toggled ? "ENABLED" : "DISABLED"])"
+	choices += "DUTCH ([dutch_toggled ? "ENABLED" : "DISABLED"])"
+	choices += "INDIANS ([indians_toggled ? "ENABLED" : "DISABLED"])"
 	choices += "CANCEL"
 
 	var/choice = input("Enable/Disable what faction?") in choices
@@ -143,19 +76,38 @@ var/pirates_toggled = TRUE
 	if (choice == "CANCEL")
 		return
 
-	else if (findtext(choice, "CIVILIANS"))
+	else if (findtext(choice, "CIVILIAN"))
 		civilians_toggled = !civilians_toggled
 		world << "<span class = 'warning'>The Civilian faction has been [civilians_toggled ? "<b><i>ENABLED</i></b>" : "<b><i>DISABLED</i></b>"].</span>"
 		message_admins("[key_name(src)] changed the Civilian faction 'enabled' setting to [civilians_toggled].")
 	else if (findtext(choice, "BRITISH"))
 		british_toggled = !british_toggled
-		world << "<span class = 'warning'>The German faction (not SS) has been [british_toggled ? "<b><i>ENABLED</i></b>" : "<b><i>DISABLED</i></b>"].</span>"
-		message_admins("[key_name(src)] changed the German faction 'enabled' setting to [british_toggled].")
+		world << "<span class = 'warning'>The British has been [british_toggled ? "<b><i>ENABLED</i></b>" : "<b><i>DISABLED</i></b>"].</span>"
+		message_admins("[key_name(src)] changed the British faction 'enabled' setting to [british_toggled].")
 	else if (findtext(choice, "PIRATES"))
 		pirates_toggled = !pirates_toggled
-		world << "<span class = 'warning'>The Soviet faction has been [pirates_toggled ? "<b><i>ENABLED</i></b>" : "<b><i>DISABLED</i></b>"].</span>"
-		message_admins("[key_name(src)] changed the Soviet faction 'enabled' setting to [pirates_toggled].")
-
+		world << "<span class = 'warning'>The Pirate faction has been [pirates_toggled ? "<b><i>ENABLED</i></b>" : "<b><i>DISABLED</i></b>"].</span>"
+		message_admins("[key_name(src)] changed the Pirate faction 'enabled' setting to [pirates_toggled].")
+	else if (findtext(choice, "INDIANS"))
+		indians_toggled = !indians_toggled
+		world << "<span class = 'warning'>The Native faction has been [indians_toggled ? "<b><i>ENABLED</i></b>" : "<b><i>DISABLED</i></b>"].</span>"
+		message_admins("[key_name(src)] changed the Native faction 'enabled' setting to [indians_toggled].")
+	else if (findtext(choice, "PORTUGUESE"))
+		portuguese_toggled = !portuguese_toggled
+		world << "<span class = 'warning'>The Portuguese faction has been [portuguese_toggled ? "<b><i>ENABLED</i></b>" : "<b><i>DISABLED</i></b>"].</span>"
+		message_admins("[key_name(src)] changed the Portuguese faction 'enabled' setting to [portuguese_toggled].")
+	else if (findtext(choice, "SPANISH"))
+		spanish_toggled = !spanish_toggled
+		world << "<span class = 'warning'>The Spanish faction has been [spanish_toggled ? "<b><i>ENABLED</i></b>" : "<b><i>DISABLED</i></b>"].</span>"
+		message_admins("[key_name(src)] changed the Spanish faction 'enabled' setting to [spanish_toggled].")
+	else if (findtext(choice, "FRENCH"))
+		french_toggled = !french_toggled
+		world << "<span class = 'warning'>The French faction has been [french_toggled ? "<b><i>ENABLED</i></b>" : "<b><i>DISABLED</i></b>"].</span>"
+		message_admins("[key_name(src)] changed the French faction 'enabled' setting to [french_toggled].")
+	else if (findtext(choice, "DUTCH"))
+		dutch_toggled = !dutch_toggled
+		world << "<span class = 'warning'>The Dutch faction has been [dutch_toggled ? "<b><i>ENABLED</i></b>" : "<b><i>DISABLED</i></b>"].</span>"
+		message_admins("[key_name(src)] changed the Dutch faction 'enabled' setting to [dutch_toggled].")
 var/civilians_forceEnabled = FALSE
 var/british_forceEnabled = FALSE
 var/pirates_forceEnabled = FALSE
@@ -175,7 +127,7 @@ var/dutch_forceEnabled = FALSE
 
 	var/list/choices = list()
 
-	choices += "CIVILIANS ([civilians_forceEnabled ? "FORCIBLY ENABLED" : "NOT FORCIBLY ENABLED"])"
+	choices += "CIVILIAN ([civilians_forceEnabled ? "FORCIBLY ENABLED" : "NOT FORCIBLY ENABLED"])"
 	choices += "BRITISH ([british_forceEnabled ? "FORCIBLY ENABLED" : "NOT FORCIBLY ENABLED"])"
 	choices += "PIRATES ([pirates_forceEnabled ? "FORCIBLY ENABLED" : "NOT FORCIBLY ENABLED"])"
 	choices += "FRENCH ([french_forceEnabled ? "FORCIBLY ENABLED" : "NOT FORCIBLY ENABLED"])"
@@ -190,7 +142,7 @@ var/dutch_forceEnabled = FALSE
 	if (choice == "CANCEL")
 		return
 
-	else if (findtext(choice, "CIVILIANS"))
+	else if (findtext(choice, "CIVILIAN"))
 		civilians_forceEnabled = !civilians_forceEnabled
 		world << "<span class = 'notice'>The Civilian faction [civilians_forceEnabled ? "has been forcibly <b>enabled</b>" : "<b>is no longer forcibly enabled</b>"].</span>"
 		message_admins("[key_name(src)] changed the Civilian faction 'forceEnabled' setting to [civilians_forceEnabled].")

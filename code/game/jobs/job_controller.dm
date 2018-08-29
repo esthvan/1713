@@ -44,7 +44,6 @@ var/global/datum/controller/occupations/job_master
 	var/british_count = 0
 	var/civilian_count = 0
 */
-	var/civilians_were_enabled = FALSE
 
 	var/admin_expected_clients = 0
 
@@ -77,15 +76,14 @@ var/global/datum/controller/occupations/job_master
 	if (map && map.subfaction_is_main_faction)
 		announce = FALSE
 
-
-	if (!is_side_locked(CIVILIAN) && map && map.faction_organization.Find(CIVILIAN))
-		if (autobalance_for_players >= PLAYER_THRESHOLD_HIGHEST-10)
+	if (!is_side_locked(INDIANS) && map && map.faction_organization.Find(INDIANS) && map.ID == MAP_COLONY)
+		if (map)
 			if (announce)
-				world << "<font size = 3><span class = 'notice'>Civilian faction is enabled.</span></font>"
-			civilians_were_enabled = TRUE
-		else
-			if (map)
-				map.faction_organization -= list(CIVILIAN)
+				world << "<font size = 3><span class = 'notice'><i>The <B>Native</B> faction starts disabled by default. Admins can enable it.</i></span></font>"
+				indians_toggled = FALSE
+				pirates_toggled = FALSE
+				spanish_toggled = FALSE
+				civilians_forceEnabled = TRUE
 
 /datum/controller/occupations/proc/spawn_with_delay(var/mob/new_player/np, var/datum/job/j)
 	// for delayed spawning, wait the spawn_delay of the job
@@ -168,14 +166,14 @@ var/global/datum/controller/occupations/job_master
 /datum/controller/occupations/proc/GetPlayerAltTitle(var/mob/new_player/player, rank)
 	return player.original_job.title
 
-/datum/controller/occupations/proc/AssignRole(var/mob/new_player/player, var/rank, var/latejoin = FALSE, var/reinforcements = FALSE)
+/datum/controller/occupations/proc/AssignRole(var/mob/new_player/player, var/rank, var/latejoin = FALSE)
 	Debug("Running AR, Player: [player], Rank: [rank], LJ: [latejoin]")
 	if (player && rank)
 		var/datum/job/job = GetJob(rank)
 		if (!job)	return FALSE
 		if (!job.player_old_enough(player.client)) return FALSE
 		var/position_limit = job.total_positions
-		if ((job.current_positions < position_limit) || position_limit == -1 || reinforcements)
+		if ((job.current_positions < position_limit) || position_limit == -1)
 			Debug("Player: [player] is now Rank: [rank], JCP:[job.current_positions], JPL:[position_limit]")
 			if (player.mind)
 				player.mind.assigned_role = rank

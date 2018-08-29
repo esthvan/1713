@@ -12,6 +12,7 @@
 /datum/job/var/blacklisted = FALSE
 /datum/job/var/is_target = FALSE //for VIP modes
 /datum/job/var/rank_abbreviation = null
+/datum/job/var/is_governor = FALSE
 
 // new autobalance stuff - Kachnov
 /datum/job/var/min_positions = 1 // absolute minimum positions if we reach player threshold
@@ -38,6 +39,8 @@
 
 	else if (istype(src, /datum/job/pirates))
 		. = PIRATES
+	else if (istype(src, /datum/job/civilian))
+		. = CIVILIAN
 	else if (istype(src, /datum/job/british))
 		. = BRITISH
 	else if (istype(src, /datum/job/french))
@@ -79,6 +82,9 @@
 	else if (istype(src, /datum/job/dutch))
 		user.faction_text = "DUTCH"
 		user.base_faction = new/datum/faction/dutch(user, src)
+	else if (istype(src, /datum/job/civilian))
+		user.faction_text = "CIVILIAN"
+		user.base_faction = new/datum/faction/civilian(user, src)
 
 
 /datum/job/proc/opposite_faction_name()

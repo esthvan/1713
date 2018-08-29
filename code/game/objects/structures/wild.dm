@@ -50,7 +50,12 @@
 /obj/structure/wild/attackby(obj/item/W as obj, mob/user as mob)
 	user.setClickCooldown(DEFAULT_ATTACK_COOLDOWN)
 	if(istype(W,/obj/item/weapon/material/hatchet))
-		health -= 25
+		visible_message("<span class='danger'>[user] begins to chop down the [src]!</span>")
+		playsound(get_turf(src), 'sound/weapons/smash.ogg', 100)
+		user.do_attack_animation(src)
+		if (do_after(user, 50, user.loc))
+			health = 0
+			try_destroy()
 	else
 		switch(W.damtype)
 			if ("fire")
@@ -81,7 +86,7 @@
 	opacity = TRUE
 	density = TRUE
 	sways = TRUE
-	amount = 3
+	amount = 4
 
 
 /obj/structure/wild/tree/fire_act(temperature)
@@ -103,7 +108,7 @@
 	opacity = TRUE
 	density = TRUE
 	sways = FALSE
-	amount = 2
+	amount = 3
 
 /obj/structure/wild/palm/fire_act(temperature)
 	if (prob(15 * (temperature/500)))
@@ -114,7 +119,7 @@
 	if (health <= 0)
 		visible_message("<span class='danger'>The [src] is broken into pieces!</span>")
 		var/obj/item/stack/material/wood/dropwood = new /obj/item/stack/material/wood(get_turf(src))
-		dropwood.amount = 3
+		dropwood.amount = 4
 		qdel(src)
 		return
 
@@ -122,7 +127,7 @@
 	if (health <= 0)
 		visible_message("<span class='danger'>The [src] is broken into pieces!</span>")
 		var/obj/item/stack/material/wood/dropwood = new /obj/item/stack/material/wood(get_turf(src))
-		dropwood.amount = 2
+		dropwood.amount = 3
 		qdel(src)
 		return
 /obj/structure/wild/palm/New()
@@ -156,12 +161,6 @@
 	opacity = FALSE
 	density = FALSE
 
-/*obj/structure/wild/junglebush
-	name = "jungle vegetation"
-	icon_state = "jungle1"
-	opacity = FALSE
-	density = FALSE
-*/
 /obj/structure/wild/junglebush
 	name = "jungle vegetation"
 	icon = 'icons/obj/flora/jungleflora.dmi'
@@ -214,11 +213,6 @@
 	..()
 	icon_state = "burnedbush[rand(1,5)]"
 
-/*/obj/structure/wild/junglebush/New()
-	..()
-
-	icon_state = "jungle[rand(1,6)]"
-*/
 /obj/structure/wild/junglebush/New()
 	..()
 	icon_state = "[rand(1,30)]"
@@ -256,7 +250,7 @@
 	sways = FALSE
 	bound_height = 64
 	bound_width = 32
-	amount = 6
+	amount = 7
 	health = 200
 	maxhealth = 200
 
@@ -273,7 +267,7 @@
 	if (health <= 0)
 		visible_message("<span class='danger'>The [src] is broken into pieces!</span>")
 		var/obj/item/stack/material/wood/dropwood = new /obj/item/stack/material/wood(get_turf(src))
-		dropwood.amount = 6
+		dropwood.amount = 7
 		qdel(src)
 		return
 
